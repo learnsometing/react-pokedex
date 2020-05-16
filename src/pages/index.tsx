@@ -1,51 +1,63 @@
 import React from 'react';
-import { Link } from 'gatsby';
-
-import Layout from '../components/layout';
-import Image from '../components/image';
 import SEO from '../components/seo';
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 
-const ImageWrapper = styled.div`
-  max-width: 300px;
-  margin-bottom: 1.45rem;
-`;
+import './index.css';
+import theme from '../components/theme';
 
-const SignOff = styled.p`
-  font-size: 1.38316rem;
-`;
+import {
+  FrameOuterLeft,
+  FrameInnerLeft,
+  FrameInnerLeftPanel,
+  FrameInnerLeftPanelInner,
+  CamAndLightsWrapper,
+  Hinge,
+} from '../components/Frame';
+import Camera from '../components/Camera';
+import {
+  LEDOuter,
+  LEDInner,
+  LEDGlareOuter,
+  LEDGlareInner,
+} from '../components/LED';
 
 const IndexPage: React.FC = () => (
-  <Layout>
-    <SEO title="Home" />
-    <h1>Hey Everyone,</h1>
-    <p>
-      I built this starter to cut down on the boilerplate required to set up a
-      modern Gatsby/React development environment. I also wanted to keep the
-      starter as minimal as possible.
-    </p>
-    <p>The main features of this starter are:</p>
-    <ul>
-      <li>
-        ESLint and prettier with recommended rules that don&#39;t interfere.
-      </li>
-      <li>Stylelint with prettier config</li>
-      <li>styled-components with prettier and stylelint config.</li>
-      <li>Jest with babel, typescript, and styled-components support.</li>
-      <li>Recommended mocks and shims for Gatsby unit testing.</li>
-      <li>
-        Cypress end to end testing environment separate from unit-testing
-        environment.
-      </li>
-      <li>Typescript, with babel, eslint, and prettier config.</li>
-      <li>All necessary Typescript types for installed packages.</li>
-    </ul>
-    <SignOff>I hope it serves you well!</SignOff>
-    <ImageWrapper>
-      <Image />
-    </ImageWrapper>
-    <Link to="/page-2/">Go to page 2</Link>
-  </Layout>
+  <ThemeProvider theme={theme}>
+    <div>
+      <FrameOuterLeft>
+        <FrameInnerLeft>
+          <CamAndLightsWrapper>
+            <Camera />
+            <LEDOuter color={'#F46036'}>
+              <LEDInner color={'#F78255'}>
+                <LEDGlareOuter color={'#FCB989'}>
+                  <LEDGlareInner />
+                </LEDGlareOuter>
+              </LEDInner>
+            </LEDOuter>
+            <LEDOuter color={'#FDD349'}>
+              <LEDInner color={'#FEDF55'}>
+                <LEDGlareOuter color={'#FFF268'}>
+                  <LEDGlareInner />
+                </LEDGlareOuter>
+              </LEDInner>
+            </LEDOuter>
+            <LEDOuter color={'#0CCE6B'}>
+              <LEDInner color={'#2FDD81'}>
+                <LEDGlareOuter color={'#60F1A4'}>
+                  <LEDGlareInner />
+                </LEDGlareOuter>
+              </LEDInner>
+            </LEDOuter>
+          </CamAndLightsWrapper>
+          <Hinge />
+          <FrameInnerLeftPanel>
+            <FrameInnerLeftPanelInner></FrameInnerLeftPanelInner>
+          </FrameInnerLeftPanel>
+        </FrameInnerLeft>
+      </FrameOuterLeft>
+    </div>
+  </ThemeProvider>
 );
 
 export default IndexPage;
