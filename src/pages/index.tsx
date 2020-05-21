@@ -1,63 +1,69 @@
 import React from 'react';
-import SEO from '../components/seo';
-import styled, { ThemeProvider } from 'styled-components';
+import { graphql } from 'gatsby';
 
+// Styles
 import './index.css';
 import theme from '../components/theme';
+import styled, { ThemeProvider } from 'styled-components';
 
-import {
-  FrameOuterLeft,
-  FrameInnerLeft,
-  FrameInnerLeftPanel,
-  FrameInnerLeftPanelInner,
-  CamAndLightsWrapper,
-  Hinge,
-} from '../components/Frame';
-import Camera from '../components/Camera';
-import {
-  LEDOuter,
-  LEDInner,
-  LEDGlareOuter,
-  LEDGlareInner,
-} from '../components/LED';
+import Frame from '../components/Frame';
+import Screen from '../components/Screen';
+import CamAndLights from '../components/CameraAndLights';
+import PokemonList from '../components/PokemonList';
+const Container = styled.div`
+  max-width: 1280px;
+  height: 100vh;
+  width: 100%;
+  padding: 1rem;
+  margin: 0 auto;
+`;
 
-const IndexPage: React.FC = () => (
-  <ThemeProvider theme={theme}>
-    <div>
-      <FrameOuterLeft>
-        <FrameInnerLeft>
-          <CamAndLightsWrapper>
-            <Camera />
-            <LEDOuter color={'#F46036'}>
-              <LEDInner color={'#F78255'}>
-                <LEDGlareOuter color={'#FCB989'}>
-                  <LEDGlareInner />
-                </LEDGlareOuter>
-              </LEDInner>
-            </LEDOuter>
-            <LEDOuter color={'#FDD349'}>
-              <LEDInner color={'#FEDF55'}>
-                <LEDGlareOuter color={'#FFF268'}>
-                  <LEDGlareInner />
-                </LEDGlareOuter>
-              </LEDInner>
-            </LEDOuter>
-            <LEDOuter color={'#0CCE6B'}>
-              <LEDInner color={'#2FDD81'}>
-                <LEDGlareOuter color={'#60F1A4'}>
-                  <LEDGlareInner />
-                </LEDGlareOuter>
-              </LEDInner>
-            </LEDOuter>
-          </CamAndLightsWrapper>
-          <Hinge />
-          <FrameInnerLeftPanel>
-            <FrameInnerLeftPanelInner></FrameInnerLeftPanelInner>
-          </FrameInnerLeftPanel>
-        </FrameInnerLeft>
-      </FrameOuterLeft>
-    </div>
-  </ThemeProvider>
-);
+const ScreenContent = styled.div`
+  max-height: calc(100% - 3rem - 0.25vh);
+  overflow-y: scroll;
+`;
 
-export default IndexPage;
+const Pokedex: React.FC = ({ data }) => {
+  console.log(data);
+  return (
+    <ThemeProvider theme={theme}>
+      <Container>
+        <Frame>
+          <Screen>
+            <CamAndLights />
+            <ScreenContent>
+              <PokemonList pokemons={data.allPokemon.nodes} />
+            </ScreenContent>
+          </Screen>
+        </Frame>
+      </Container>
+    </ThemeProvider>
+  );
+};
+
+export default Pokedex;
+
+export const query = graphql`
+  query {
+    allPokemon {
+      nodes {
+        name
+        number
+        spriteLocal {
+          childImageSharp {
+            fluid {
+              ...GatsbyImageSharpFluid_withWebp
+            }
+          }
+        }
+      }
+    }
+
+    allCries: allFile(filter: { sourceInstanceName: { eq: "cries" } }) {
+      nodes {
+        publicURL
+        name
+      }
+    }
+  }
+`;
