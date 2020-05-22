@@ -1,64 +1,103 @@
-import React from 'react';
+import React, { useReducer, createContext, ReactNode } from 'react';
 import { graphql } from 'gatsby';
 
 // PropTypes
 import PropTypes from 'prop-types';
-import { pokemonPropType, cryPropType } from '../propTypes';
+import { pokemonPropType, cryPropType } from '../shared/propTypes';
 
 // Styles
 import './index.css';
 import theme from '../components/theme';
-import styled, { ThemeProvider } from 'styled-components';
+import { ThemeProvider } from 'styled-components';
+
+// Interfaces
+import { Pokemon, Cry } from '../shared/interfaces';
 
 // Components
-import Frame from '../components/Frame';
-import Screen from '../components/Screen';
-import CamAndLights from '../components/CameraAndLights';
-import MobilePokemonViews from '../components/MobilePokemonViews/MobilePokemonViews';
-import { FluidObject } from 'gatsby-image';
+import Layout from '../components/Layout/Layout';
+import PokemonSwiper from '../components/PokemonSwiper/PokemonSwiper';
 
-const Container = styled.div`
-  max-width: 1280px;
-  height: 100vh;
-  width: 100%;
-  padding: 0.5rem;
-  margin: 0 auto;
-`;
+// Helpers
+import groupPokemonWithCries from '../helpers/groupPokemonWithCries';
 
-const Content = styled.div`
-  max-height: calc(100% - 3rem - 0.25vh);
-  display: flex;
-  overflow: hidden;
-`;
+const actionTypes = {
+  started: 'STARTED',
+  loaded: 'LOADED',
+};
 
-interface ChildImageSharp {
-  childImageSharp: {
-    fluid: FluidObject;
+interface StartedAction {
+  type: typeof actionTypes.started;
+  payload: [];
+}
+
+interface LoadedAction {
+  type: typeof actionTypes.loaded;
+  payload: Pokemon[];
+}
+
+type PokemonActionTypes = StartedAction | LoadedAction;
+
+export const PokemonContext = createContext();
+
+interface ProviderProps {
+  allPokemon: Pokemon[];
+  children: ReactNode;
+}
+
+interface State {
+  loading: boolean;
+  more: boolean;
+  pokemon: Pokemon[];
+  after: number;
+}
+
+const PokemonProvider: React.FC<ProviderProps> = ({ children, allPokemon }) => {
+  const perPage = 10;
+  const initialState: State = {
+    loading: false,
+    more: true,
+    pokemon: allPokemon.slice(0, perPage),
+    after: 10,
   };
-}
-
-interface Type {
-  type: {
-    name: string;
+  const reducer = (state: State, action: PokemonActionTypes): State => {
+    switch (action.type) {
+      case actionTypes.started:
+        return { ...state, loading: true };
+      case actionTypes.loaded:
+        return {
+          ...state,
+          loading: false,
+          pokemon: [...state.pokemon, ...action.payload],
+          more: action.payload.length === perPage,
+          after: state.after + action.payload.length,
+        };
+      default:
+        throw new Error('Invalid action.');
+    }
   };
-}
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { loading, pokemon, after, more } = state;
+  const load = (): void => {
+    dispatch({ type: actionTypes.started, payload: [] });
+    setTimeout(() => {
+      const newPokemon = allPokemon.slice(after, after + perPage);
+      dispatch({ type: actionTypes.loaded, payload: newPokemon });
+    }, 100);
+  };
 
-export interface Pokemon {
-  number: number;
-  name: string;
-  height: string;
-  weight: string;
-  spriteLocal: ChildImageSharp;
-  types: Type[];
-}
+  return (
+    <PokemonContext.Provider value={{ after, loading, pokemon, more, load }}>
+      {children}
+    </PokemonContext.Provider>
+  );
+};
 
-export interface Cry {
-  name: string;
-  ext: string;
-  publicURL: string;
-}
+PokemonProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+  allPokemon: PropTypes.arrayOf(pokemonPropType.isRequired).isRequired,
+};
 
-interface Data {
+interface Props {
   data: {
     allPokemon: {
       nodes: Pokemon[];
@@ -70,51 +109,24 @@ interface Data {
   };
 }
 
-export interface GroupedCries {
-  [key: string]: {
-    [key: string]: string | undefined;
-  };
-}
+const Index: React.FC<Props> = ({ data }) => {
+  const allPokemon = data.allPokemon.nodes;
+  const cries = data.allCries.nodes;
 
-const groupCriesByName = (cries: Cry[]): GroupedCries => {
-  return cries.reduce((acc: GroupedCries, cry: Cry): GroupedCries => {
-    const key = cry.name;
-    const ext = cry.ext.slice(1);
-
-    if (!acc[key]) {
-      acc[key] = { ogg: undefined, mp3: undefined };
-    }
-
-    acc[key][ext] = cry.publicURL;
-    return acc;
-  }, {});
-};
-
-const Pokedex: React.FC<Data> = ({ data: { allPokemon, allCries } }) => {
-  const pokemons = allPokemon.nodes;
-  const cries = allCries.nodes;
-  const criesGroupedByPokemon = groupCriesByName(cries);
+  const allPokemonWithCries = groupPokemonWithCries(cries, allPokemon);
 
   return (
     <ThemeProvider theme={theme}>
-      <Container>
-        <Frame>
-          <Screen>
-            <CamAndLights />
-            <Content>
-              <MobilePokemonViews
-                pokemons={pokemons}
-                cries={criesGroupedByPokemon}
-              />
-            </Content>
-          </Screen>
-        </Frame>
-      </Container>
+      <Layout>
+        <PokemonProvider allPokemon={allPokemonWithCries}>
+          <PokemonSwiper />
+        </PokemonProvider>
+      </Layout>
     </ThemeProvider>
   );
 };
 
-Pokedex.propTypes = {
+Index.propTypes = {
   data: PropTypes.shape({
     allPokemon: PropTypes.shape({
       nodes: PropTypes.arrayOf(pokemonPropType.isRequired).isRequired,
@@ -125,7 +137,7 @@ Pokedex.propTypes = {
   }).isRequired,
 };
 
-export default Pokedex;
+export default Index;
 
 export const query = graphql`
   query {
