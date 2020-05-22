@@ -60,6 +60,7 @@ const PokemonProvider: React.FC<ProviderProps> = ({ children, allPokemon }) => {
     after: 10,
   };
   const reducer = (state: State, action: PokemonActionTypes): State => {
+    console.log(state, action);
     switch (action.type) {
       case actionTypes.started:
         return { ...state, loading: true };
@@ -86,7 +87,7 @@ const PokemonProvider: React.FC<ProviderProps> = ({ children, allPokemon }) => {
   };
 
   return (
-    <PokemonContext.Provider value={{ after, loading, pokemon, more, load }}>
+    <PokemonContext.Provider value={{ loading, pokemon, more, load }}>
       {children}
     </PokemonContext.Provider>
   );

@@ -2,7 +2,6 @@ import React, { useContext, useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Img from 'gatsby-image';
 import Swiper from 'react-id-swiper';
-import { useInView } from 'react-intersection-observer';
 
 // Styles & Font
 import 'swiper/css/swiper.min.css';
@@ -89,34 +88,32 @@ const PokemonSwiper: React.FC = () => {
     containerClass: '.container',
     shouldSwiperUpdate: true,
   };
-  const { after, pokemon, load, more } = useContext(PokemonContext);
+  const { pokemon, load, more } = useContext(PokemonContext);
   const loader = useRef(load);
+  const observer = useRef(null);
+  const [element, setElement] = useState(null);
 
   useEffect(() => {
     loader.current = load;
   }, [load]);
 
-  const observer = useRef(
-    new IntersectionObserver(
-      (entries) => {
-        const first = entries[0];
-        if (first.isIntersecting && more) {
-          loader.current();
-        }
-      },
-      { threshold: 0.9 }
-    )
-  );
-  const [element, setElement] = useState(null);
-
   useEffect(() => {
     const currentElement = element;
     const currentObserver = observer.current;
-
+    if (!currentObserver) {
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          const first = entries[0];
+          if (first.isIntersecting && more) {
+            loader.current();
+          }
+        },
+        { threshold: 0.9 }
+      );
+    }
     if (currentElement) {
       currentObserver.observe(currentElement);
     }
-
     return () => {
       if (currentElement) {
         currentObserver.unobserve(currentElement);
