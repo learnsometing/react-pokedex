@@ -23,9 +23,14 @@ exports.sourceNodes = async ({
 
   pokemons.forEach((pokemon) => {
     const node = {
-      name: pokemon.name,
       number: pokemon.id,
+      name: pokemon.name,
+      // convert from decimeters to meters
+      height: `${pokemon.height / 10} m`,
+      // convert from hectograms to kilograms
+      weight: `${(pokemon.weight * 100) / 1000} kg`,
       spriteRemote: pokemon.sprites.front_default,
+      types: pokemon.types,
       id: createNodeId(`Pokemon-${pokemon.name}`),
       internal: {
         type: 'Pokemon',
