@@ -28,6 +28,7 @@ const Container = styled.div`
 const Content = styled.div`
   max-height: calc(100% - 3rem - 0.25vh);
   display: flex;
+  justify-content: center;
   overflow: hidden;
 `;
 
