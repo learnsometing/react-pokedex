@@ -12,7 +12,7 @@ const CamAndLightsWrapper = styled.div`
   width: 100%;
   padding: 1rem 0.5rem;
   padding-top: 0;
-  background-color: #000;
+  background-color: ${(props): string => props.theme.screen};
 `;
 
 const CamAndLights: React.FC = () => (

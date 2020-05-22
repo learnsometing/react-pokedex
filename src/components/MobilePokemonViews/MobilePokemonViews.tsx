@@ -22,7 +22,6 @@ const Slide = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
-  padding: 1rem;
 `;
 
 const SpriteWrapper = styled.div`

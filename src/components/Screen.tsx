@@ -7,7 +7,7 @@ const ScreenBezel = styled.div`
   padding: 1rem;
   height: 100%;
   width: 100%;
-  background-color: #000;
+  background-color: ${(props): string => props.theme.screen};
 `;
 
 const ScreenInner = styled.div`
