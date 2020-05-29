@@ -25,3 +25,17 @@ export const pokemonPropType = PropTypes.shape({
     .isRequired,
   types: PropTypes.array.isRequired,
 });
+
+export const pokemonWithCry = PropTypes.shape({
+  number: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  height: PropTypes.string.isRequired,
+  weight: PropTypes.string.isRequired,
+  spriteLocal: PropTypes.shape({ childImageSharp: childImageSharpPropType })
+    .isRequired,
+  types: PropTypes.array.isRequired,
+  cry: PropTypes.shape({
+    mp3: PropTypes.string.isRequired,
+    ogg: PropTypes.string.isRequired,
+  }).isRequired,
+});
