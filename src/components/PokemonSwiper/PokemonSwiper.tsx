@@ -2,6 +2,7 @@ import React, { useContext, useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Img from 'gatsby-image';
 import Swiper from 'react-id-swiper';
+import GridLoader from 'react-spinners/GridLoader';
 
 // Styles & Font
 import 'swiper/css/swiper.min.css';
@@ -9,6 +10,7 @@ import './PokemonSwiper.css';
 
 // Context
 import { PokemonContext } from '../../pages/index';
+import theme from '../theme';
 
 // Interfaces
 import { PokemonWithCry } from '../../shared/interfaces';
@@ -89,7 +91,7 @@ const PokemonSwiper: React.FC = () => {
     containerClass: '.container',
     shouldSwiperUpdate: true,
   };
-  const { pokemon, load, more } = useContext(PokemonContext);
+  const { pokemon, load, loading, more } = useContext(PokemonContext);
   const loader = useRef(load);
   const observer = useRef<IntersectionObserver | null>(null);
   const [element, setElement] = useState<Element | null>(null);
@@ -128,30 +130,36 @@ const PokemonSwiper: React.FC = () => {
         return (
           <Slide
             key={node.name}
-            ref={(idx + 1) % 8 === 0 ? setElement : undefined}
+            ref={(idx + 1) % 10 === 0 ? setElement : undefined}
           >
-            <Title>
-              {`${node.number.toString().padStart(3, '0')} ${node.name}`}
-            </Title>
-            <SpriteWrapper>
-              <Img fluid={node.spriteLocal.childImageSharp.fluid} />
-            </SpriteWrapper>
-            <Figure>
-              <FigCaption>Cry:</FigCaption>
-              <Audio controls>
-                <source src={node.cry.ogg} type="audio/ogg" />
-                <source src={node.cry.mp3} type="audio/mpeg" />
-              </Audio>
-            </Figure>
-            <Types>
-              {node.types.map(({ type }) => (
-                <Type key={`${node.name}-${type.name}`} type={type.name}>
-                  {type.name}
-                </Type>
-              ))}
-            </Types>
-            <Attribute>Weight: {node.height}</Attribute>
-            <Attribute>Height: {node.weight}</Attribute>
+            {(idx + 1) % 10 === 0 && loading ? (
+              <GridLoader color={theme.text} size={20} margin={4} />
+            ) : (
+              <>
+                <Title>
+                  {`${node.number.toString().padStart(3, '0')} ${node.name}`}
+                </Title>
+                <SpriteWrapper>
+                  <Img fluid={node.spriteLocal.childImageSharp.fluid} />
+                </SpriteWrapper>
+                <Figure>
+                  <FigCaption>Cry:</FigCaption>
+                  <Audio controls>
+                    <source src={node.cry.ogg} type="audio/ogg" />
+                    <source src={node.cry.mp3} type="audio/mpeg" />
+                  </Audio>
+                </Figure>
+                <Types>
+                  {node.types.map(({ type }) => (
+                    <Type key={`${node.name}-${type.name}`} type={type.name}>
+                      {type.name}
+                    </Type>
+                  ))}
+                </Types>
+                <Attribute>Weight: {node.weight}</Attribute>
+                <Attribute>Height: {node.height}</Attribute>
+              </>
+            )}
           </Slide>
         );
       })}

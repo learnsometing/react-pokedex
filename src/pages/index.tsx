@@ -83,7 +83,7 @@ const PokemonProvider: React.FC<ProviderProps> = ({ children, allPokemon }) => {
     setTimeout(() => {
       const newPokemon = allPokemon.slice(after, after + perPage);
       dispatch({ type: actionTypes.loaded, payload: newPokemon });
-    }, 100);
+    }, 500);
   };
 
   return (
