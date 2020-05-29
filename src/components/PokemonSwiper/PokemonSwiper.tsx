@@ -2,7 +2,10 @@ import React, { useContext, useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Img from 'gatsby-image';
 import Swiper from 'react-id-swiper';
-import GridLoader from 'react-spinners/GridLoader';
+import { useInView } from 'react-intersection-observer';
+
+// components
+import LoadingSpinner from '../shared/LoadingSpinner';
 
 // Styles & Font
 import 'swiper/css/swiper.min.css';
@@ -10,10 +13,12 @@ import './PokemonSwiper.css';
 
 // Context
 import { PokemonContext } from '../../pages/index';
-import theme from '../theme';
 
 // Interfaces
 import { PokemonWithCry } from '../../shared/interfaces';
+
+// Animations
+import { fadeIn } from '../shared/animations';
 
 const Slide = styled.div`
   min-height: 100%;
@@ -95,6 +100,10 @@ const PokemonSwiper: React.FC = () => {
   const loader = useRef(load);
   const observer = useRef<IntersectionObserver | null>(null);
   const [element, setElement] = useState<Element | null>(null);
+  const [firstSlideRef, firstSlideInView] = useInView({
+    threshold: 0.1,
+    triggerOnce: true,
+  });
 
   useEffect(() => {
     loader.current = load;
@@ -124,16 +133,31 @@ const PokemonSwiper: React.FC = () => {
     };
   }, [element]);
 
+  useEffect(() => {
+    if (firstSlideInView) {
+      fadeIn('.first-slide', 0.5, 0.5);
+    }
+  }, [firstSlideInView]);
+
   return (
     <Swiper {...swiperParams}>
       {pokemon.map((node: PokemonWithCry, idx: number) => {
+        let ref = undefined;
+
+        if (idx === 0) {
+          ref = firstSlideRef;
+        } else if ((idx + 1) % 10 === 0) {
+          ref = setElement;
+        }
+
         return (
           <Slide
             key={node.name}
-            ref={(idx + 1) % 10 === 0 ? setElement : undefined}
+            className={idx === 0 ? 'first-slide' : undefined}
+            ref={ref}
           >
             {(idx + 1) % 10 === 0 && loading ? (
-              <GridLoader color={theme.text} size={20} margin={4} />
+              <LoadingSpinner />
             ) : (
               <>
                 <Title>
