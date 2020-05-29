@@ -6,11 +6,12 @@ import Swiper from 'react-id-swiper';
 // Styles & Font
 import 'swiper/css/swiper.min.css';
 import './PokemonSwiper.css';
-import 'typeface-montserrat';
-import 'typeface-roboto-slab';
 
 // Context
 import { PokemonContext } from '../../pages/index';
+
+// Interfaces
+import { PokemonWithCry } from '../../shared/interfaces';
 
 const Slide = styled.div`
   min-height: 100%;
@@ -90,8 +91,8 @@ const PokemonSwiper: React.FC = () => {
   };
   const { pokemon, load, more } = useContext(PokemonContext);
   const loader = useRef(load);
-  const observer = useRef(null);
-  const [element, setElement] = useState(null);
+  const observer = useRef<IntersectionObserver | null>(null);
+  const [element, setElement] = useState<Element | null>(null);
 
   useEffect(() => {
     loader.current = load;
@@ -111,11 +112,11 @@ const PokemonSwiper: React.FC = () => {
         { threshold: 0.9 }
       );
     }
-    if (currentElement) {
+    if (currentElement && currentObserver) {
       currentObserver.observe(currentElement);
     }
-    return () => {
-      if (currentElement) {
+    return (): void => {
+      if (currentElement && currentObserver) {
         currentObserver.unobserve(currentElement);
       }
     };
@@ -123,11 +124,11 @@ const PokemonSwiper: React.FC = () => {
 
   return (
     <Swiper {...swiperParams}>
-      {pokemon.map((node, idx: number) => {
+      {pokemon.map((node: PokemonWithCry, idx: number) => {
         return (
           <Slide
             key={node.name}
-            ref={(idx + 1) % 10 === 0 ? setElement : undefined}
+            ref={(idx + 1) % 8 === 0 ? setElement : undefined}
           >
             <Title>
               {`${node.number.toString().padStart(3, '0')} ${node.name}`}
