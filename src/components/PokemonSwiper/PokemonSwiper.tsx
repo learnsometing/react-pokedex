@@ -23,7 +23,10 @@ import { fadeIn } from '../shared/animations';
 const Slide = styled.div`
   height: 100%;
   width: 100%;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
   @media screen and (orientation: landscape) {
     flex-direction: row;
   }

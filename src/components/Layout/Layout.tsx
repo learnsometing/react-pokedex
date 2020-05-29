@@ -17,10 +17,14 @@ const Container = styled.div`
 `;
 
 const Content = styled.div`
-  max-height: calc(100% - 3rem - 0.25vh);
+  width: 100%;
   display: flex;
   justify-content: center;
   overflow: hidden;
+
+  @media screen and (orientation: landscape) {
+    max-height: 100%;
+  }
 `;
 
 interface Props {

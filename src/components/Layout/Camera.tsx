@@ -7,6 +7,11 @@ export const CameraOuter = styled.div`
   padding: 1px;
   margin-left: 1vw;
   background-color: #fff;
+
+  @media screen and (orientation: landscape) {
+    margin-left: 0;
+    margin-bottom: 1vh;
+  }
 `;
 
 export const CameraLens = styled.div`
@@ -15,6 +20,10 @@ export const CameraLens = styled.div`
   height: 100%;
   padding: 0.25vh;
   background-color: #0c082c;
+
+  @media screen and (orientation: landscape) {
+    padding: 0.25vw;
+  }
 `;
 
 export const CameraLensInner = styled.div`
@@ -24,6 +33,10 @@ export const CameraLensInner = styled.div`
   padding: 0.25vh;
   width: 100%;
   height: 100%;
+
+  @media screen and (orientation: landscape) {
+    padding: 0.25vw;
+  }
 `;
 
 export const CameraLensGlare = styled(CameraLensInner)`

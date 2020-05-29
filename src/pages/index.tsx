@@ -150,8 +150,8 @@ export const query = graphql`
         weight
         spriteLocal {
           childImageSharp {
-            fluid(maxWidth: 96) {
-              ...GatsbyImageSharpFluid_withWebp
+            fixed(width: 96) {
+              ...GatsbyImageSharpFixed_withWebp
             }
           }
         }

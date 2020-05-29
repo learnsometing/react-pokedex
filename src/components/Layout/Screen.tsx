@@ -7,13 +7,19 @@ const ScreenBezel = styled.div`
   padding: 1rem;
   height: 100%;
   width: 100%;
-  background-color: ${(props): string => props.theme.screen};
+  background-color: ${(props): string => props.theme.screenMargin};
 `;
 
 const ScreenInner = styled.div`
   height: 100%;
   width: 100%;
   background-color: ${(props): string => props.theme.screen};
+  display: flex;
+  flex-direction: column;
+
+  @media screen and (orientation: landscape) {
+    flex-direction: row;
+  }
 `;
 
 interface Props {

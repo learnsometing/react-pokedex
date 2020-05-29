@@ -12,7 +12,16 @@ const CamAndLightsWrapper = styled.div`
   width: 100%;
   padding: 1rem 0.5rem;
   padding-top: 0;
-  background-color: ${(props): string => props.theme.screen};
+  background-color: ${(props): string => props.theme.screenMargin};
+
+  @media screen and (orientation: landscape) {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    height: 100%;
+    width: fit-content;
+    padding-top: 0.5rem;
+    padding-left: 0;
+  }
 `;
 
 const CamAndLights: React.FC = () => (

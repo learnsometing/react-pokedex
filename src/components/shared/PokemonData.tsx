@@ -21,31 +21,68 @@ const Container = styled.div`
   align-items: center;
 `;
 
+const PokemonIDWrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem;
+  padding: 2rem;
+  height: 100%;
+  width: 100%;
+  background-color: #ebebeb;
+  border-top-right-radius: 30px;
+  border-top-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 30px;
+
+  @media screen and (orientation: landscape) {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+`;
+
 const Title = styled.h1`
+  position: absolute;
+  margin-top: -0.75rem;
+  padding: 0.25rem 0.75rem;
+  top: 0;
   text-align: center;
-  color: ${(props): string => props.theme.text};
-  margin: 0;
+  color: ${(props): string => props.theme.id};
   font-size: 1.25rem;
   font-family: 'montserrat', sans-serif;
   text-transform: uppercase;
+  background-color: #5c5d5b;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
 `;
 
 const SpriteWrapper = styled.div`
-  max-width: 120px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Details = styled.div`
+  width: 100%;
+  background-color: #ebebeb;
+  margin: 1rem;
+  padding: 1rem;
 `;
 
 const Figure = styled.figure`
   display: block;
-  width: 100%;
   margin: 0;
-  margin-bottom: 1rem;
+  width: 100%;
 `;
 
 const FigCaption = styled.figcaption`
   color: ${(props): string => props.theme.text};
-  font-family: 'Roboto Slab', serif;
-  margin: 1rem;
+  font-family: 'montserrat', serif;
+  font-weight: 500;
+  margin: 1rem 0;
 `;
 
 const Audio = styled.audio`
@@ -57,24 +94,26 @@ const Types = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
-  margin: 0.75rem 0;
+  margin: 1rem 0;
 `;
 
 const Type = styled.div<TypeProps>`
   border-radius: 1rem;
   padding: 0.25rem 0.75rem;
-  margin: 0 0.5rem;
+  margin: 0 0.25rem;
   background-color: ${(props): string => props.theme.typeColors[props.type]};
   text-align: center;
-  font-family: 'Roboto Slab', serif;
+  font-family: 'montserrat', serif;
+  font-weight: 500;
   text-transform: capitalize;
 `;
 
 const Attribute = styled.p`
   color: ${(props): string => props.theme.text};
   text-align: center;
-  font-family: 'Roboto Slab', serif;
-  margin: 0.75rem;
+  font-family: 'montserrat', serif;
+  font-weight: 500;
+  margin: 1rem 0;
 `;
 
 interface Props {
@@ -84,26 +123,32 @@ interface Props {
 const PokemonData: React.FC<Props> = ({ data }) => {
   return (
     <Container>
-      <Title>{`${data.number.toString().padStart(3, '0')} ${data.name}`}</Title>
-      <SpriteWrapper>
-        <Img fluid={data.spriteLocal.childImageSharp.fluid} />
-      </SpriteWrapper>
-      <Figure>
-        <FigCaption>Cry:</FigCaption>
-        <Audio controls>
-          <source src={data.cry.ogg} type="audio/ogg" />
-          <source src={data.cry.mp3} type="audio/mpeg" />
-        </Audio>
-      </Figure>
-      <Types>
-        {data.types.map(({ type }) => (
-          <Type key={`${data.name}-${type.name}`} type={type.name}>
-            {type.name}
-          </Type>
-        ))}
-      </Types>
-      <Attribute>Weight: {data.weight}</Attribute>
-      <Attribute>Height: {data.height}</Attribute>
+      <PokemonIDWrapper>
+        <Title>{`${data.number.toString().padStart(3, '0')} ${
+          data.name
+        }`}</Title>
+        <SpriteWrapper>
+          <Img fixed={data.spriteLocal.childImageSharp.fixed} />
+          <Figure>
+            <FigCaption>Cry:</FigCaption>
+            <Audio controls>
+              <source src={data.cry.ogg} type="audio/ogg" />
+              <source src={data.cry.mp3} type="audio/mpeg" />
+            </Audio>
+          </Figure>
+        </SpriteWrapper>
+        <Details>
+          <Types>
+            {data.types.map(({ type }) => (
+              <Type key={`${data.name}-${type.name}`} type={type.name}>
+                {type.name}
+              </Type>
+            ))}
+          </Types>
+          <Attribute>Weight: {data.weight}</Attribute>
+          <Attribute>Height: {data.height}</Attribute>
+        </Details>
+      </PokemonIDWrapper>
     </Container>
   );
 };

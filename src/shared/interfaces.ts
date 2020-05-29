@@ -1,8 +1,8 @@
-import { FluidObject } from 'gatsby-image';
+import { FixedObject } from 'gatsby-image';
 
 interface ChildImageSharp {
   childImageSharp: {
-    fluid: FluidObject;
+    fixed: FixedObject;
   };
 }
 

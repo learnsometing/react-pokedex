@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 
 export const childImageSharpPropType = PropTypes.shape({
-  fluid: PropTypes.shape({
-    sizes: PropTypes.string.isRequired,
+  fixed: PropTypes.shape({
     src: PropTypes.string.isRequired,
     srcSet: PropTypes.string.isRequired,
     base64: PropTypes.string.isRequired,
     aspectRatio: PropTypes.number.isRequired,
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
   }).isRequired,
 }).isRequired;
 

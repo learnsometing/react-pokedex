@@ -4,7 +4,7 @@ const theme = {
   screenMargin: '#000',
   screen: '#0c082c',
   penLine: '2px solid black',
-  text: '#0cce6b',
+  id: '#0cce6b',
   typeColors: {
     normal: '#aaaa99',
     fire: '#ff4422',
@@ -21,6 +21,9 @@ const theme = {
     rock: '#bbaa66',
     ghost: '#6666bb',
     dragon: '#7766ee',
+    fairy: '#ee99ee',
+    dark: '#775544',
+    steel: '#aaaabb',
   },
 };
 
