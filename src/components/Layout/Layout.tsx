@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { useInView } from 'react-intersection-observer';
 
 // Components
 import Frame from './Frame';
@@ -26,16 +27,23 @@ interface Props {
   children: ReactNode;
 }
 
-const Layout: React.FC<Props> = ({ children }) => (
-  <Container>
-    <Frame>
-      <Screen>
-        <CamAndLights />
-        <Content>{children}</Content>
-      </Screen>
-    </Frame>
-  </Container>
-);
+const Layout: React.FC<Props> = ({ children }) => {
+  const [layoutRef, layoutInView] = useInView({
+    threshold: 0.1,
+    triggerOnce: true,
+  });
+
+  return (
+    <Container ref={layoutRef}>
+      <Frame>
+        <Screen>
+          <CamAndLights />
+          <Content>{layoutInView ? children : <></>}</Content>
+        </Screen>
+      </Frame>
+    </Container>
+  );
+};
 
 Layout.propTypes = {
   children: PropTypes.node.isRequired,
